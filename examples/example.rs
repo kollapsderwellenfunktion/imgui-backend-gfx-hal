@@ -334,7 +334,6 @@ fn main() {
         };
         
         
-        println!("texture_id before passing is {}", texture_id.id());
         let w = Window::new(&ui,im_str!("Image Test"))
             .position([20.0, 20.0], Condition::Appearing)
             .size([700.0, 200.0], Condition::Appearing)
