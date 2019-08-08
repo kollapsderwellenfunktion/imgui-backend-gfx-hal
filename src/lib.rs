@@ -317,7 +317,7 @@ impl<B: Backend> Renderer<B> {
     return (ImTextureID)descriptor_set;
 }*/
 
-    pub fn add_texture(&mut self,device : &B::Device,sampler : B::Sampler, image_view : B::ImageView, image_layout : hal::image::Layout) -> TextureId {
+    pub fn add_texture(&mut self,device : &B::Device,sampler : &B::Sampler, image_view : &B::ImageView, image_layout : &hal::image::Layout) -> TextureId {
             
             let descriptor_set = unsafe { 
                 self.descriptor_pool.allocate_set(&self.descriptor_set_layout).expect("could not allocate ds set in add_texture")
@@ -329,9 +329,9 @@ impl<B: Backend> Renderer<B> {
                     binding: 0,
                     array_offset: 0,
                     descriptors: &[pso::Descriptor::CombinedImageSampler(
-                        &image_view,
+                        image_view,
                         image::Layout::ShaderReadOnlyOptimal,
-                        &sampler,
+                        sampler,
                     )],
                 };
                 unsafe {
