@@ -31,7 +31,6 @@ struct MouseState {
 fn main() {
     env_logger::init();
 
-   // let mut imgui = ImGui::init();
     let mut imgui = Context::create();
 
     let mut events_loop = winit::EventsLoop::new();
@@ -162,26 +161,7 @@ fn main() {
                 height: extent.height as _,
                 depth: 1,
             };
-           /* let pairs = backbuffer
-            .into_iter()
-            .map(|image| unsafe {
-                let rtv = device
-                    .create_image_view(
-                        &image,
-                        i::ViewKind::D2,
-                        format,
-                        Swizzle::NO,
-                        COLOR_RANGE.clone(),
-                    )
-                    .unwrap();
-                (image, rtv)
-            })
-            .collect::<Vec<_>>();*/
-            
-            
-            
-            
-            
+      
             let pairs = backbuffer
                 .into_iter()
                 .map(|image| unsafe {
@@ -335,12 +315,7 @@ fn main() {
             + delta.subsec_nanos() as f32 / 1_000_000_000.0;
         last_frame = now;
 
-   /*     unsafe fn acquire_image(
-    &mut self, 
-    timeout_ns: u64, 
-    semaphore: Option<&B::Semaphore>, 
-    fence: Option<&B::Fence>*/
-        
+ 
         
         let frame: hal::SwapImageIndex = unsafe {
             match swap_chain
@@ -351,16 +326,7 @@ fn main() {
             }
         };
 
-        /*let physical_size = window
-            .get_inner_size()
-            .unwrap()
-            .to_physical(window.get_hidpi_factor());
-        let hidpi_factor = window.get_hidpi_factor().round();
-        let logical_size = physical_size.to_logical(hidpi_factor);*/
-        //let frame_size = FrameSize {
-          //  logical_size: logical_size.into(),
-            //hidpi_factor,
-       // };
+   
         let ui = imgui.frame();
         ui.show_demo_window(&mut opened);
         let texture_id = unsafe {

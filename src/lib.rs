@@ -280,42 +280,7 @@ impl<B: Backend> Buffers<B> {
 }
 
 impl<B: Backend> Renderer<B> {
-    /// Initializes the renderer.
-    
-  /*  ImTextureID ImGui_ImplVulkan_AddTexture(VkSampler sampler, VkImageView image_view, VkImageLayout image_layout){
-    VkResult err;
-
-    printf("we are in add Texture, image layout is %d\n", image_layout);
-    fflush(stdout);
-    VkDescriptorSet descriptor_set;
-    // Create Descriptor Set:
-    {
-        VkDescriptorSetAllocateInfo alloc_info = {};
-        alloc_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-        alloc_info.descriptorPool = g_DescriptorPool;
-        alloc_info.descriptorSetCount = 1;
-        alloc_info.pSetLayouts = &g_DescriptorSetLayout;
-        err = vkAllocateDescriptorSets(g_Device, &alloc_info, &descriptor_set);
-        check_vk_result(err);
-    }
-
-    // Update the Descriptor Set:
-    {
-        VkDescriptorImageInfo desc_image[1] = {};
-        desc_image[0].sampler = sampler;
-        desc_image[0].imageView = image_view;
-        desc_image[0].imageLayout = image_layout;
-        VkWriteDescriptorSet write_desc[1] = {};
-        write_desc[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        write_desc[0].dstSet = descriptor_set;
-        write_desc[0].descriptorCount = 1;
-        write_desc[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        write_desc[0].pImageInfo = desc_image;
-        vkUpdateDescriptorSets(g_Device, 1, write_desc, 0, NULL);
-    }
-
-    return (ImTextureID)descriptor_set;
-}*/
+  
 
     pub fn add_texture(&mut self,device : &B::Device,sampler : &B::Sampler, image_view : &B::ImageView, image_layout : &hal::image::Layout) -> TextureId {
             
@@ -708,7 +673,6 @@ impl<B: Backend> Renderer<B> {
                 image_view,
                 descriptor_pool,
                 descriptor_set_layout,
-              //  descriptor_set,
                 pipeline,
                 pipeline_layout, texture_sets : vec![descriptor_set]
             })
@@ -760,12 +724,7 @@ impl<B: Backend> Renderer<B> {
         unsafe {
             // Bind pipeline
             pass.bind_graphics_pipeline(&self.pipeline);
-          /*  pass.bind_graphics_descriptor_sets(
-                &self.pipeline_layout,
-                0,
-                Some(&self.texture_sets[0]),
-                None as Option<u32>,
-            );*/
+       
 
             // Bind vertex and index buffers
             pass.bind_vertex_buffers(
@@ -841,12 +800,10 @@ impl<B: Backend> Renderer<B> {
                     pass.set_scissors(0, &[scissor]);
 
                     
-                  //  pass
-                    //                    vkCmdBindDescriptorSets(command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, g_PipelineLayout, 0, 1, desc_set, 0, NULL);
+                 
                 
                   let texture_index = texture_id.id();
                   
-                    println!("texture id is {}",texture_index);
                   
                      pass.bind_graphics_descriptor_sets(
                 &self.pipeline_layout,
