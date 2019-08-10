@@ -17,6 +17,9 @@ use hal::{
 };
 use imgui::{ImGui, Context};
 use imgui_winit_support::{HiDpiMode, WinitPlatform};
+//use hal::window::Surface;
+
+
 use imgui::*;
 //use hal::window::Backbuffer;
 
@@ -30,6 +33,7 @@ struct MouseState {
 
 fn main() {
     env_logger::init();
+  //  use gfx_hal::window::Surface;
 
     let mut imgui = Context::create();
 
@@ -42,7 +46,12 @@ fn main() {
     
     let instance = back::Instance::create("imgui-gfx-hal", 1);
     let mut surface = instance.create_surface(&window);
-    let mut adapters = instance.enumerate_adapters().into_iter();
+    
+
+    
+  //  let mut adapters = hal::instance::enumerate_adapters(&instance).into_iter();
+    
+let mut adapters = instance.enumerate_adapters().into_iter();
 
     let (adapter, device, mut queue_group) = loop {
         let adapter = adapters.next().expect("No suitable adapter found");
@@ -83,12 +92,12 @@ fn main() {
 
             extent.width = extent
                 .width
-                .max(caps.extents.start.width)
-                .min(caps.extents.end.width);
+                .max(caps.extents.start().width)
+                .min(caps.extents.end().width);
             extent.height = extent
                 .height
-                .max(caps.extents.start.height)
-                .min(caps.extents.end.height);
+                .max(caps.extents.start().height)
+                .min(caps.extents.end().height);
 
             extent
         }
@@ -98,7 +107,7 @@ fn main() {
         extent.width,
         extent.height,
         format,
-        caps.image_count.start,
+        *caps.image_count.start(),
     )
     .with_image_usage(image::Usage::COLOR_ATTACHMENT);
     let (mut swap_chain, backbuffer) = unsafe {
@@ -353,7 +362,7 @@ fn main() {
                     &render_pass,
                     &framebuffers[frame as usize],
                     viewport.rect,
-                    &[command::ClearValue::Color(command::ClearColor::Float(
+                    &[command::ClearValue::Color(command::ClearColor::Sfloat(
                         [0.2, 0.2, 0.2, 1.0],
                     ))],
                 );
@@ -387,7 +396,7 @@ fn main() {
             // Wait for the command buffer to be done.
             device.wait_for_fence(&frame_fence, !0).unwrap();
             device.reset_fence(&frame_fence).unwrap();
-            command_pool.reset();
+            command_pool.reset(true);
         }
     }
 

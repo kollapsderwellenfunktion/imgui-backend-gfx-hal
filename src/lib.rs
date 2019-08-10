@@ -20,6 +20,7 @@ use hal::{
 use imgui::{ImDrawIdx, ImDrawVert, ImGui, Ui};
 use imgui::{DrawCmd, DrawCmdParams, DrawData, ImString, TextureId, Textures};
 
+
 #[derive(Clone, Debug, Fail)]
 pub enum Error {
     #[fail(display = "can't find valid memory type for {}", _0)]
@@ -490,7 +491,7 @@ impl<B: Backend> Renderer<B> {
                     transfer_cbuf.finish();
 
                     // Submit to the queue
-                    queue.submit_nosemaphores(
+                    queue.submit_without_semaphores(
                         Some(&transfer_cbuf),
                         Some(&transfer_fence),
                     );
@@ -559,11 +560,16 @@ impl<B: Backend> Renderer<B> {
 
             // Create shaders
             let vs_module = {
-                let spirv = include_bytes!("../shaders/ui.vert.spirv");
+               // let spirv = include_bytes!("../shaders/ui.vert.spirv");
+                let file = std::fs::File::open("shaders/ui.vert.spirv").expect("could not open vertex shader");
+                 let spirv: Vec<u32> = hal::read_spirv(file).unwrap();
+               
                 device.create_shader_module(&spirv[..])?
             };
             let fs_module = {
-                let spirv = include_bytes!("../shaders/ui.frag.spirv");
+                let file = std::fs::File::open("shaders/ui.frag.spirv").expect("could not open fragment shader");
+              //  let spirv = include_bytes!("../shaders/ui.frag.spirv");
+                let spirv: Vec<u32> = hal::read_spirv(file).unwrap();
                 device.create_shader_module(&spirv[..])?
             };
 
@@ -606,10 +612,10 @@ impl<B: Backend> Renderer<B> {
                 );
 
                 // Enable blending
-                pipeline_desc.blender.targets.push(pso::ColorBlendDesc(
-                    pso::ColorMask::ALL,
-                    pso::BlendState::ALPHA,
-                ));
+                pipeline_desc.blender.targets.push(pso::ColorBlendDesc {
+                    mask : pso::ColorMask::ALL,
+                    blend : Some(pso::BlendState::ALPHA),
+                });
 
                 // Set up vertex buffer
                 pipeline_desc.vertex_buffers.push(pso::VertexBufferDesc {
